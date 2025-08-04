@@ -9,22 +9,23 @@ interface EventCardProps {
   location: string;
   category: string;
   distance: string;
-  price: string;
+  // Align with DB shape: use price_range (optional)
+  price_range?: string;
   organizer: string;
   is_featured?: boolean;
   registration_url?: string;
 }
 
-const EventCard = ({ 
-  title_zh, 
-  date, 
-  location, 
-  category, 
-  distance, 
-  price, 
-  organizer, 
+const EventCard = ({
+  title_zh,
+  date,
+  location,
+  category,
+  distance,
+  price_range,
+  organizer,
   is_featured = false,
-  registration_url 
+  registration_url
 }: EventCardProps) => {
   const categoryColors = {
     '馬拉松': 'bg-red-500',
@@ -79,7 +80,7 @@ const EventCard = ({
         </div>
         
         <div className="pt-2">
-          <span className="text-lg font-semibold text-accent">{price}</span>
+          <span className="text-lg font-semibold text-accent">{price_range ?? ''}</span>
         </div>
       </CardContent>
 
