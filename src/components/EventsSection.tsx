@@ -1,16 +1,29 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import EventCard from './EventCard';
 import { Search, Filter } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
+type EventItem = {
+  id: string;
+  title_zh?: string;
+  date: string;
+  location?: string;
+  category?: string;
+  distance?: string;
+  price_range?: string;
+  organizer?: string;
+  is_featured?: boolean;
+  registration_url?: string;
+};
+
 const EventsSection = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('全部分類');
-  const [selectedLocation, setSelectedLocation] = useState('全部地區');
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('全部分類');
+  const [selectedLocation, setSelectedLocation] = useState<string>('全部地區');
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const categories = ['全部分類', '馬拉松', '半程馬拉松', '10公里', '5公里', '越野跑'];
   const locations = ['全部地區', '中環', '尖沙咀', '沙田', '太平山', '大嶼山', '維多利亞港'];
@@ -26,18 +39,19 @@ const EventsSection = () => {
         .from('events')
         .select('*')
         .order('date', { ascending: true });
-      
+
       if (error) throw error;
-      setEvents(data || []);
-    } catch (err) {
-      setError(err.message);
+      setEvents((data as EventItem[]) || []);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      setError(message);
     } finally {
       setLoading(false);
     }
   };
 
   // Filter events based on search and filters
-  const filteredEvents = events.filter(event => {
+  const filteredEvents = events.filter((event) => {
     const matchesSearch = event.title_zh?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          event.location?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === '全部分類' || event.category === selectedCategory;
@@ -46,8 +60,8 @@ const EventsSection = () => {
     return matchesSearch && matchesCategory && matchesLocation;
   });
 
-  const featuredEvents = filteredEvents.filter(event => event.is_featured);
-  const upcomingEvents = filteredEvents.filter(event => !event.is_featured);
+  const featuredEvents = filteredEvents.filter((event: EventItem) => !!event.is_featured);
+  const upcomingEvents = filteredEvents.filter((event: EventItem) => !event.is_featured);
 
   if (loading) {
     return (
