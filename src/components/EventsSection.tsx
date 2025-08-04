@@ -175,7 +175,18 @@ const EventsSection = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {featuredEvents.map((event) => (
-                <EventCard key={event.id} {...event} />
+                <EventCard
+                  key={event.id}
+                  title_zh={event.title_zh ?? '未命名活動'}
+                  date={event.date}
+                  location={event.location ?? '—'}
+                  category={event.category ?? '其他'}
+                  distance={event.distance ?? '—'}
+                  price_range={event.price_range}
+                  organizer={event.organizer ?? '—'}
+                  is_featured={event.is_featured}
+                  registration_url={event.registration_url}
+                />
               ))}
             </div>
           </div>
@@ -186,7 +197,18 @@ const EventsSection = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {upcomingEvents.map((event) => (
-                <EventCard key={event.id} {...event} />
+                <EventCard
+                  key={event.id}
+                  title_zh={event.title_zh ?? '未命名活動'}
+                  date={event.date}
+                  location={event.location ?? '—'}
+                  category={event.category ?? '其他'}
+                  distance={event.distance ?? '—'}
+                  price_range={event.price_range}
+                  organizer={event.organizer ?? '—'}
+                  is_featured={event.is_featured}
+                  registration_url={event.registration_url}
+                />
               ))}
             </div>
           </div>

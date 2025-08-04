@@ -1,77 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
+
   <!-- Homepage -->
   <url>
-    <loc>https://marathonhk.com/</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://marathons.hk/</loc>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://marathonhk.com/" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://marathonhk.com/" />
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://marathonhk.com/" />
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://marathons.hk/" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://marathons.hk/" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://marathons.hk/" />
   </url>
 
   <!-- Events Page -->
   <url>
-    <loc>https://marathonhk.com/events</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://marathons.hk/events</loc>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
   <!-- About Page -->
   <url>
-    <loc>https://marathonhk.com/about</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://marathons.hk/about</loc>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Contact Page -->
   <url>
-    <loc>https://marathonhk.com/contact</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://marathons.hk/contact</loc>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <!-- Category Pages -->
   <url>
-    <loc>https://marathonhk.com/events?category=marathon</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://marathons.hk/events?category=marathon</loc>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://marathonhk.com/events?category=half-marathon</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://marathons.hk/events?category=half-marathon</loc>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://marathonhk.com/events?category=10k</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://marathons.hk/events?category=10k</loc>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://marathonhk.com/events?category=5k</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://marathons.hk/events?category=5k</loc>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://marathonhk.com/events?category=trail</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://marathons.hk/events?category=trail</loc>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
 </urlset>
-

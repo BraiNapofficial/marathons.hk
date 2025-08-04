@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://marathonhk.com/sitemap.xml
+Sitemap: https://marathons.hk/sitemap.xml
 
 # Crawl-delay for better server performance
 Crawl-delay: 1
