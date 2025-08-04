@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Calendar, MapPin, Users, ExternalLink, Clock } from 'lucide-react';
@@ -50,10 +51,10 @@ const EventCard = ({
               {category}
             </span>
           </div>
-        
-        <h3 className="text-xl font-semibold text-foreground group-hover:text-accent transition-colors">
-          {title_zh}
-        </h3>
+          <h3 className="text-xl font-semibold text-foreground group-hover:text-accent transition-colors">
+            {title_zh}
+          </h3>
+        </div>
       </CardHeader>
 
       <CardContent className="space-y-3">
