@@ -110,25 +110,25 @@ const Hero = () => {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-3xl mx-auto animate-fade-in-up" style={{animationDelay: '0.8s'}}>
-            <div className="glass-effect rounded-lg p-6 text-center card-hover">
-              <Calendar className="w-8 h-8 text-accent mx-auto mb-3" />
-              <div className="text-2xl font-bold text-white mb-1">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 max-w-3xl mx-auto animate-fade-in-up" style={{animationDelay: '0.8s'}}>
+            <div className="glass-effect rounded-lg p-3 sm:p-4 text-center card-hover">
+              <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-accent mx-auto mb-1 sm:mb-3" />
+              <div className="text-xl sm:text-2xl font-bold text-white mb-1">
                 {loading ? '...' : `${eventCount}+`}
               </div>
-              <div className="text-white/80">即將舉行的活動</div>
+              <div className="text-xs sm:text-sm text-white/80">即將舉行的活動</div>
             </div>
             
-            <div className="glass-effect rounded-lg p-6 text-center card-hover">
-              <MapPin className="w-8 h-8 text-accent mx-auto mb-3" />
-              <div className="text-2xl font-bold text-white mb-1">全港</div>
-              <div className="text-white/80">覆蓋各區域</div>
+            <div className="glass-effect rounded-lg p-3 sm:p-4 text-center card-hover">
+              <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-accent mx-auto mb-1 sm:mb-3" />
+              <div className="text-xl sm:text-2xl font-bold text-white mb-1">全港</div>
+              <div className="text-xs sm:text-sm text-white/80">覆蓋各區域</div>
             </div>
             
-            <div className="glass-effect rounded-lg p-6 text-center card-hover">
-              <Users className="w-8 h-8 text-accent mx-auto mb-3" />
-              <div className="text-2xl font-bold text-white mb-1">1000+</div>
-              <div className="text-white/80">跑步愛好者</div>
+            <div className="glass-effect rounded-lg p-3 sm:p-4 text-center card-hover">
+              <Users className="w-6 h-6 sm:w-8 sm:h-8 text-accent mx-auto mb-1 sm:mb-3" />
+              <div className="text-xl sm:text-2xl font-bold text-white mb-1">1000+</div>
+              <div className="text-xs sm:text-sm text-white/80">跑步愛好者</div>
             </div>
           </div>
         </div>

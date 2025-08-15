@@ -46,47 +46,47 @@ const EventsTable: React.FC<Props> = ({ events }) => {
 
   return (
     <div className="w-full overflow-x-auto rounded-md border border-border shadow-sm">
-      <table className="w-full border-collapse text-sm md:text-base">
+      <table className="w-full border-collapse text-sm">
         <thead className="bg-muted/50 sticky top-0">
           <tr>
-            <th scope="col" className="px-3 py-3 text-left font-semibold text-foreground">日期</th>
-            <th scope="col" className="px-3 py-3 text-left font-semibold text-foreground">活動名稱</th>
-            <th scope="col" className="px-3 py-3 text-left font-semibold text-foreground hidden md:table-cell">分類</th>
-            <th scope="col" className="px-3 py-3 text-left font-semibold text-foreground hidden lg:table-cell">距離</th>
-            <th scope="col" className="px-3 py-3 text-left font-semibold text-foreground hidden md:table-cell">地點</th>
-            <th scope="col" className="px-3 py-3 text-left font-semibold text-foreground w-28"></th>
+            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground">日期</th>
+            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground">活動名稱</th>
+            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground hidden sm:table-cell">分類</th>
+            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground hidden lg:table-cell">距離</th>
+            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground hidden sm:table-cell">地點</th>
+            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground w-24 sm:w-28"></th>
           </tr>
         </thead>
         <tbody>
           {events.map((e) => (
             <tr key={e.id} className="border-t border-border hover:bg-muted/30">
-              <td className="px-3 py-3 align-middle whitespace-nowrap">{formatDate(e.date)}</td>
-              <td className="px-3 py-3 align-middle">
-                <div className="font-medium text-foreground">{e.title_zh || '未命名活動'}</div>
-                <div className="mt-1 flex gap-2 md:hidden text-xs text-muted-foreground">
+              <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle whitespace-nowrap text-sm">{formatDate(e.date)}</td>
+              <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle">
+                <div className="font-medium text-foreground text-sm sm:text-base">{e.title_zh || '未命名活動'}</div>
+                <div className="mt-1 flex gap-2 sm:hidden text-xs text-muted-foreground">
                   <span>{e.category || '其他'}</span>
                   <span>•</span>
                   <span>{e.location || '—'}</span>
                 </div>
               </td>
-              <td className="px-3 py-3 align-middle hidden md:table-cell">{e.category || '其他'}</td>
-              <td className="px-3 py-3 align-middle hidden lg:table-cell text-muted-foreground">{e.distance || '—'}</td>
-              <td className="px-3 py-3 align-middle hidden md:table-cell text-muted-foreground">{e.location || '—'}</td>
-              <td className="px-3 py-3 align-middle">
+              <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle hidden sm:table-cell text-sm">{e.category || '其他'}</td>
+              <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle hidden lg:table-cell text-muted-foreground text-sm">{e.distance || '—'}</td>
+              <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle hidden sm:table-cell text-muted-foreground text-sm">{e.location || '—'}</td>
+              <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle">
                 {e.registration_url ? (
                   <div className="w-full flex items-center justify-end">
                     <a
                       href={e.registration_url}
                       target="_blank"
                       rel="noopener"
-                      className="inline-flex items-center justify-center rounded-md border border-accent text-accent hover:bg-accent hover:text-accent-foreground px-3 py-1.5 text-sm transition-colors"
+                      className="inline-flex items-center justify-center rounded-md border border-accent text-accent hover:bg-accent hover:text-accent-foreground px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm transition-colors"
                     >
                       立即報名
                     </a>
                   </div>
                 ) : (
                   <div className="w-full flex items-center justify-end">
-                    <span className="text-muted-foreground">—</span>
+                    <span className="text-muted-foreground text-sm">—</span>
                   </div>
                 )}
               </td>
