@@ -36,7 +36,9 @@ const EventDetailsCard: React.FC<EventDetailsCardProps> = ({ event }) => {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">報名費用</p>
-                <p className="font-semibold text-foreground">{formatPrice(event.price)}</p>
+                <p className="font-semibold text-foreground">
+                  {formatPrice(event.price ?? null)}
+                </p>
               </div>
             </div>
 
