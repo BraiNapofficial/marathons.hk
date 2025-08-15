@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import EventCard from './EventCard';
+import EventsTable, { EventRow } from '@/components/EventsTable';
 import { Search, Filter } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
@@ -189,7 +189,20 @@ const EventsSection = () => {
     );
   }
 
-    return (
+  // Map to EventRow for EventsTable
+  const mapToEventRow = (event: EventItem): EventRow => ({
+    id: event.id,
+    title_zh: event.title_zh || '未命名活動',
+    date: event.date,
+    location: event.location || null,
+    category: event.category || null,
+    distance: event.distance || null,
+    price_range: event.price_range || null,
+    registration_url: event.registration_url || null,
+    slug: null
+  });
+
+  return (
     <section id="events" className="py-20 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
@@ -243,51 +256,21 @@ const EventsSection = () => {
             </div>
           </div>
 
-          {/* Featured Events */}
-          <div className="mb-16">
-            <div className="flex items-center gap-2 mb-8">
-              <Filter className="w-5 h-5 text-accent" />
-              <h3 className="text-2xl font-semibold text-foreground">精選活動</h3>
+          {/* Featured Events Table */}
+          {featuredEvents.length > 0 && (
+            <div className="mb-16">
+              <div className="flex items-center gap-2 mb-8">
+                <Filter className="w-5 h-5 text-accent" />
+                <h3 className="text-2xl font-semibold text-foreground">精選活動</h3>
+              </div>
+              <EventsTable events={featuredEvents.map(mapToEventRow)} />
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {featuredEvents.map((event) => (
-                <EventCard
-                  key={event.id}
-                  title_zh={event.title_zh ?? '未命名活動'}
-                  date={event.date}
-                  location={event.location ?? '—'}
-                  category={event.category ?? '其他'}
-                  distance={event.distance ?? '—'}
-                  price_range={event.price_range}
-                  organizer={event.organizer ?? '—'}
-                  is_featured={event.is_featured}
-                  registration_url={event.registration_url}
-                />
-              ))}
-            </div>
-          </div>
+          )}
 
-          {/* Upcoming Events */}
+          {/* Upcoming Events Table */}
           <div className="mb-12">
             <h3 className="text-2xl font-semibold text-foreground mb-8">即將舉行</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {upcomingEvents.map((event) => (
-                <EventCard
-                  key={event.id}
-                  title_zh={event.title_zh ?? '未命名活動'}
-                  date={event.date}
-                  location={event.location ?? '—'}
-                  category={event.category ?? '其他'}
-                  distance={event.distance ?? '—'}
-                  price_range={event.price_range}
-                  organizer={event.organizer ?? '—'}
-                  is_featured={event.is_featured}
-                  registration_url={event.registration_url}
-                />
-              ))}
-            </div>
+            <EventsTable events={upcomingEvents.map(mapToEventRow)} />
           </div>
 
           {/* Load More Notice */}
