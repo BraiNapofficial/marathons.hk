@@ -8,6 +8,33 @@ const Hero = () => {
   const [eventCount, setEventCount] = useState(50);
   const [loading, setLoading] = useState(true);
 
+  // Log viewport info for debugging responsiveness
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      
+      // Determine active breakpoint based on Tailwind defaults
+      let breakpoint = 'xs';
+      if (width >= 640) breakpoint = 'sm';
+      if (width >= 768) breakpoint = 'md';
+      if (width >= 1024) breakpoint = 'lg';
+      if (width >= 1280) breakpoint = 'xl';
+      if (width >= 1536) breakpoint = '2xl';
+      
+      console.log(`[Hero Responsiveness] Viewport: ${width}x${height}, Breakpoint: ${breakpoint}`);
+      console.log('[Hero Responsiveness] Applied classes:', {
+        h1: 'text-4xl md:text-5xl lg:text-6xl',
+        subtitle: 'text-lg md:text-xl',
+        description: 'text-base md:text-lg'
+      });
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     fetchEventCount();
   }, []);
@@ -25,10 +52,11 @@ const Hero = () => {
       setLoading(false);
     }
   };
+
   return (
-    <section 
-      id="home" 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+    <section
+      id="home"
+      className="relative min-h-[60vh] md:min-h-[80vh] lg:min-h-screen flex items-center justify-center overflow-hidden pt-24 md:pt-0"
     >
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
@@ -46,17 +74,17 @@ const Hero = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
           {/* Main Heading */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-display text-white mb-6 text-shadow animate-fade-in-up">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-white mb-4 md:mb-6 pt-16 md:pt-0 text-shadow-md animate-fade-in-up">
             香港馬拉松活動
           </h1>
           
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-white/90 mb-8 font-body text-shadow animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+          <p className="text-lg md:text-xl text-white/90 mb-6 md:mb-8 font-body leading-relaxed text-shadow-md animate-fade-in-up" style={{animationDelay: '0.2s'}}>
             探索香港最完整的跑步活動資訊平台
           </p>
           
           {/* Description */}
-          <p className="text-lg text-white/80 mb-12 max-w-2xl mx-auto font-body text-shadow animate-fade-in-up" style={{animationDelay: '0.4s'}}>
+          <p className="text-base md:text-lg text-white/80 mb-8 md:mb-12 max-w-2xl mx-auto font-body leading-normal text-shadow-md animate-fade-in-up" style={{animationDelay: '0.4s'}}>
             從馬拉松到越野跑，從初學者到專業選手，找到最適合你的跑步活動。
             立即加入香港跑步社群，開始你的跑步旅程。
           </p>
@@ -82,7 +110,7 @@ const Hero = () => {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto animate-fade-in-up" style={{animationDelay: '0.8s'}}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-3xl mx-auto animate-fade-in-up" style={{animationDelay: '0.8s'}}>
             <div className="glass-effect rounded-lg p-6 text-center card-hover">
               <Calendar className="w-8 h-8 text-accent mx-auto mb-3" />
               <div className="text-2xl font-bold text-white mb-1">
@@ -117,4 +145,3 @@ const Hero = () => {
 };
 
 export default Hero;
-
