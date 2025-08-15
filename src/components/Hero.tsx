@@ -56,7 +56,7 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="relative min-h-[60vh] md:min-h-[80vh] lg:min-h-screen flex items-center justify-center overflow-hidden pt-24 md:pt-0"
+      className="relative min-h-[50vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden py-8 md:py-0"
     >
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
@@ -71,10 +71,10 @@ const Hero = () => {
         <div className="absolute inset-0 bg-black/50"></div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-        <div className="max-w-4xl mx-auto">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 flex flex-col justify-center items-center h-full">
+        <div className="max-w-4xl mx-auto w-full">
           {/* Main Heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-white mb-4 md:mb-6 pt-16 md:pt-0 text-shadow-md animate-fade-in-up">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-white mb-3 md:mb-6 text-shadow-md animate-fade-in-up">
             香港馬拉松活動
           </h1>
           

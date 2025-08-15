@@ -21,15 +21,33 @@ function formatDate(iso: string) {
   try {
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return iso;
-    // Render as "17 Aug 2025" in HK time
-    const fmt = new Intl.DateTimeFormat('en-GB', {
+    
+    // Render as "17 Aug 2025" on desktop
+    const desktopFormat = new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Asia/Hong_Kong',
       day: '2-digit',
       month: 'short',
       year: 'numeric',
+    }).format(d).replace(',', '');
+    
+    // Render as "17 Aug\n2025" on mobile
+    const mobileDay = d.getDate();
+    const mobileMonth = d.toLocaleString('en-GB', {
+      month: 'short',
+      timeZone: 'Asia/Hong_Kong'
     });
-    // Intl with en-GB gives format like "17 Aug 2025"
-    return fmt.format(d).replace(',', '');
+    const mobileYear = d.getFullYear();
+    
+    return (
+      <>
+        <span className="hidden sm:inline">{desktopFormat}</span>
+        <span className="sm:hidden">
+          <span>{mobileDay} {mobileMonth}</span>
+          <br />
+          <span className="block text-right">{mobileYear}</span>
+        </span>
+      </>
+    );
   } catch {
     return iso;
   }
@@ -60,7 +78,7 @@ const EventsTable: React.FC<Props> = ({ events }) => {
         <tbody>
           {events.map((e) => (
             <tr key={e.id} className="border-t border-border hover:bg-muted/30">
-              <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle whitespace-nowrap text-sm">{formatDate(e.date)}</td>
+              <td className="px-2 py-2 sm:px-3 sm:py-3 align-top whitespace-nowrap text-sm">{formatDate(e.date)}</td>
               <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle">
                 <div className="font-medium text-foreground text-sm sm:text-base">{e.title_zh || '未命名活動'}</div>
                 <div className="mt-1 flex gap-2 sm:hidden text-xs text-muted-foreground">
