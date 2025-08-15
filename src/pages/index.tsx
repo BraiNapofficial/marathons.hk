@@ -20,7 +20,15 @@ function hkTodayYYYYMMDD(): string {
 }
 
 // Map DB row (from marathons.hk) to EventRow expected by EventsTable
-function mapDbToEventRow(row: any): EventRow {
+function mapDbToEventRow(row: {
+  id: string | number;
+  event_name?: string;
+  event_date: string;
+  location?: string;
+  event_category?: string;
+  distance?: string;
+  link?: string;
+}): EventRow {
   return {
     id: String(row.id),
     title_zh: row.event_name ?? '未命名活動',

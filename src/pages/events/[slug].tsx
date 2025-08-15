@@ -138,7 +138,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
     }
 
     // Generate paths for all events
-    const paths = events.map((event: any) => ({
+    const paths = events.map((event: {
+      id: string | number;
+      event_name?: string;
+      event_date: string;
+      english_slug_base?: string;
+    }) => ({
       params: {
         slug: event.english_slug_base || 'event'
       }
@@ -180,7 +185,24 @@ export const getStaticProps: GetStaticProps<EventPageProps> = async ({ params })
     }
 
     // Find event by matching slug
-    const eventData = events.find((event: any) =>
+    const eventData = events.find((event: {
+      id: string | number;
+      event_name?: string;
+      event_date: string;
+      event_category?: string;
+      distance?: string;
+      location?: string;
+      link?: string;
+      event_time?: string;
+      price?: number;
+      organizer?: string;
+      description?: string;
+      image_url?: string;
+      registration_deadline?: string;
+      max_participants?: number;
+      current_participants?: number;
+      english_slug_base?: string;
+    }) =>
       event.english_slug_base === slug
     );
 
@@ -213,12 +235,30 @@ export const getStaticProps: GetStaticProps<EventPageProps> = async ({ params })
 
     // Get related events (same category or location, excluding current event)
     const relatedEvents: RelatedEvent[] = events
-      .filter((e: any) => 
-        e.id !== eventData.id && 
+      .filter((e: {
+        id: string | number;
+        event_name?: string;
+        event_date: string;
+        event_category?: string;
+        distance?: string;
+        location?: string;
+        link?: string;
+        english_slug_base?: string;
+      }) =>
+        e.id !== eventData.id &&
         (e.event_category === eventData.event_category || e.location === eventData.location)
       )
       .slice(0, 3)
-      .map((e: any) => ({
+      .map((e: {
+        id: string | number;
+        event_name?: string;
+        event_date: string;
+        event_category?: string;
+        distance?: string;
+        location?: string;
+        link?: string;
+        english_slug_base?: string;
+      }) => ({
         id: String(e.id),
         title_zh: e.event_name || '未命名活動',
         date: e.event_date,

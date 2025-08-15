@@ -2,6 +2,7 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import EventsTable, { EventRow } from '@/components/EventsTable';
 import { supabase } from '@/lib/supabase';
+import Link from 'next/link';
 
 type EventsPageProps = {
   events: EventRow[];
@@ -83,7 +84,15 @@ export const getServerSideProps: GetServerSideProps<EventsPageProps> = async (ct
     };
   }
 
-  const events = (data as any[]).map((e) => ({
+  const events = (data || []).map((e: {
+    id: string | number;
+    event_name?: string;
+    event_date: string;
+    location?: string;
+    event_category?: string;
+    distance?: string;
+    link?: string;
+  }) => ({
     id: e.id,
     title_zh: e.event_name ?? '未命名活動',
     date: e.event_date, // Postgres DATE -> "YYYY-MM-DD"
@@ -165,12 +174,12 @@ export default function EventsPage({ events, category, from, q }: EventsPageProp
                 </div>
 
                 <div className="md:col-span-4 flex justify-end gap-3">
-                  <a
+                  <Link
                     href="/events"
                     className="px-4 py-2 border border-border rounded-md text-sm hover:bg-muted"
                   >
                     重設
-                  </a>
+                  </Link>
                   <button
                     type="submit"
                     className="px-4 py-2 bg-accent text-accent-foreground rounded-md text-sm hover:bg-accent/90"

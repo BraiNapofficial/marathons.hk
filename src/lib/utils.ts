@@ -1,7 +1,7 @@
 // Simple class value type
 type ClassValue = string | number | boolean | undefined | null | ClassArray | ClassDictionary
 type ClassArray = ClassValue[]
-type ClassDictionary = Record<string, any>
+type ClassDictionary = Record<string, unknown>
 
 // Simple clsx alternative
 function clsx(...inputs: ClassValue[]): string {

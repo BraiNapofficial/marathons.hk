@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
 import EventCard from './EventCard';
 import { Search, Filter } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import Link from 'next/link';
 
 type EventItem = {
   id: string;
@@ -53,7 +53,15 @@ const EventsSection = () => {
         throw new Error(error.message || 'Supabase query failed');
       }
 
-      let rows: EventItem[] = (data || []).map((row: any) => ({
+      let rows: EventItem[] = (data || []).map((row: {
+        id: string | number;
+        event_name?: string;
+        event_date: string;
+        location?: string;
+        event_category?: string;
+        distance?: string;
+        link?: string;
+      }) => ({
         id: String(row.id),
         title_zh: row.event_name ?? '未命名活動',
         date: row.event_date,
@@ -80,7 +88,15 @@ const EventsSection = () => {
           .order('date', { ascending: false });
 
         if (fbErr) throw new Error(fbErr.message || 'Supabase fallback query failed');
-        rows = (fallbackData || []).map((row: any) => ({
+        rows = (fallbackData || []).map((row: {
+          id: string | number;
+          event_name?: string;
+          event_date: string;
+          location?: string;
+          event_category?: string;
+          distance?: string;
+          link?: string;
+        }) => ({
           id: String(row.id),
           title_zh: row.event_name ?? '未命名活動',
           date: row.event_date,
@@ -277,7 +293,7 @@ const EventsSection = () => {
           {/* Load More Notice */}
           <div className="text-center text-sm text-muted-foreground">
             如需更多活動與進階搜尋，請前往
-            <a href="/events" className="underline underline-offset-2 pl-1 hover:text-accent">活動列表</a>
+            <Link href="/events" className="underline underline-offset-2 pl-1 hover:text-accent">活動列表</Link>
           </div>
         </div>
       </div>

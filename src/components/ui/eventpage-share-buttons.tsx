@@ -13,7 +13,6 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({ event }) => {
 
   const eventUrl = typeof window !== 'undefined' ? window.location.href : '';
   const eventTitle = `${event.title_zh} - ${event.date}`;
-  const eventDescription = `參加${event.title_zh}，地點：${event.location}`;
 
   const shareUrls = {
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}`,
