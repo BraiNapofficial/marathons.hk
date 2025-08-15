@@ -22,7 +22,7 @@ export default function Document() {
         <meta name="googlebot" content="index, follow" />
         
         {/* Canonical URL */}
-        <link rel="canonical" href="https://marathonhk.com/" />
+        <link rel="canonical" href="https://marathons.hk/" />
       </Head>
       <body className="antialiased">
         <Main />

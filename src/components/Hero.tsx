@@ -63,18 +63,21 @@ const Hero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 animate-fade-in-up" style={{animationDelay: '0.6s'}}>
-            <Button 
-              size="lg" 
-              className="bg-accent hover:bg-accent/90 text-white font-semibold px-8 py-3 text-lg transition-all btn-hover"
-            >
-              瀏覽活動
-            </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="lg"
+              onClick={() => {
+                const el = document.getElementById('events');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                  // Fallback: navigate to anchor if element not found (SSR hydration edge)
+                  window.location.hash = 'events';
+                }
+              }}
               className="border-white text-white hover:bg-white hover:text-gray-900 px-8 py-3 text-lg transition-colors btn-hover"
             >
-              了解更多
+              瀏覽活動
             </Button>
           </div>
 

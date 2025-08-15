@@ -35,15 +35,51 @@ const EventsSection = () => {
   const fetchEvents = async () => {
     try {
       setLoading(true);
+      setError(null);
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const isoToday = today.toISOString().slice(0, 10); // YYYY-MM-DD
+
+      // Prefer upcoming events from today; if none, fall back to recent past 90 days
       const { data, error } = await supabase
         .from('events')
         .select('*')
+        .gte('date', isoToday)
         .order('date', { ascending: true });
 
-      if (error) throw error;
-      setEvents((data as EventItem[]) || []);
+      if (error) {
+        // Surface Supabase error details
+        throw new Error(error.message || 'Supabase query failed');
+      }
+
+      let rows: EventItem[] = (data as EventItem[]) || [];
+
+      // Fallback: if no upcoming events, show last 90 days to avoid an empty homepage
+      if (!rows.length) {
+        const past90 = new Date(today);
+        past90.setDate(past90.getDate() - 90);
+        const isoPast90 = past90.toISOString().slice(0, 10);
+
+        const { data: fallbackData, error: fbErr } = await supabase
+          .from('events')
+          .select('*')
+          .gte('date', isoPast90)
+          .lte('date', isoToday)
+          .order('date', { ascending: false });
+
+        if (fbErr) throw new Error(fbErr.message || 'Supabase fallback query failed');
+        rows = (fallbackData as EventItem[]) || [];
+      }
+
+      setEvents(rows);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Unknown error';
+      const message =
+        err instanceof Error
+          ? err.message
+          : typeof err === 'string'
+          ? err
+          : 'Unknown error';
       setError(message);
     } finally {
       setLoading(false);
@@ -52,11 +88,14 @@ const EventsSection = () => {
 
   // Filter events based on search and filters
   const filteredEvents = events.filter((event) => {
-    const matchesSearch = event.title_zh?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         event.location?.toLowerCase().includes(searchTerm.toLowerCase());
+    const term = searchTerm.trim().toLowerCase();
+    const matchesSearch =
+      !term ||
+      event.title_zh?.toLowerCase().includes(term) ||
+      event.location?.toLowerCase().includes(term);
     const matchesCategory = selectedCategory === '全部分類' || event.category === selectedCategory;
     const matchesLocation = selectedLocation === '全部地區' || event.location === selectedLocation;
-    
+
     return matchesSearch && matchesCategory && matchesLocation;
   });
 
@@ -103,7 +142,7 @@ const EventsSection = () => {
               </h2>
               <div className="text-red-500">
                 <p>載入活動資料時發生錯誤</p>
-                <p className="text-sm mt-2">{error}</p>
+                <p className="text-sm mt-2 break-all">{error}</p>
               </div>
             </div>
           </div>
@@ -213,15 +252,10 @@ const EventsSection = () => {
             </div>
           </div>
 
-          {/* Load More Button */}
-          <div className="text-center">
-            <Button 
-              variant="outline" 
-              size="lg"
-              className="border-border hover:border-accent hover:bg-accent hover:text-accent-foreground px-8 py-3"
-            >
-              載入更多活動
-            </Button>
+          {/* Load More Notice */}
+          <div className="text-center text-sm text-muted-foreground">
+            如需更多活動與進階搜尋，請前往
+            <a href="/events" className="underline underline-offset-2 pl-1 hover:text-accent">活動列表</a>
           </div>
         </div>
       </div>

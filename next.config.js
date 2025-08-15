@@ -2,7 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  output: 'export',
+  // IMPORTANT: Remove static export so SSR (getServerSideProps) works for /events and /events/[slug]
+  // If you want to export statically later, switch those pages to SSG/ISR.
+  // output: 'export', // removed
   trailingSlash: true,
   
   // Image optimization
