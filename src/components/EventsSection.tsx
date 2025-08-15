@@ -43,7 +43,7 @@ const EventsSection = () => {
 
       // Prefer upcoming events from today; if none, fall back to recent past 90 days
       const { data, error } = await supabase
-        .from('events')
+        .from('marathons.hk')
         .select('*')
         .gte('date', isoToday)
         .order('date', { ascending: true });
@@ -53,7 +53,18 @@ const EventsSection = () => {
         throw new Error(error.message || 'Supabase query failed');
       }
 
-      let rows: EventItem[] = (data as EventItem[]) || [];
+      let rows: EventItem[] = (data || []).map((row: any) => ({
+        id: String(row.id),
+        title_zh: row.event_name ?? '未命名活動',
+        date: row.event_date,
+        location: row.location ?? undefined,
+        category: row.event_category ?? undefined,
+        distance: row.distance ?? undefined,
+        price_range: undefined,
+        organizer: undefined,
+        is_featured: false,
+        registration_url: row.link ?? undefined,
+      })) || [];
 
       // Fallback: if no upcoming events, show last 90 days to avoid an empty homepage
       if (!rows.length) {
@@ -62,14 +73,25 @@ const EventsSection = () => {
         const isoPast90 = past90.toISOString().slice(0, 10);
 
         const { data: fallbackData, error: fbErr } = await supabase
-          .from('events')
+          .from('marathons.hk')
           .select('*')
           .gte('date', isoPast90)
           .lte('date', isoToday)
           .order('date', { ascending: false });
 
         if (fbErr) throw new Error(fbErr.message || 'Supabase fallback query failed');
-        rows = (fallbackData as EventItem[]) || [];
+        rows = (fallbackData || []).map((row: any) => ({
+          id: String(row.id),
+          title_zh: row.event_name ?? '未命名活動',
+          date: row.event_date,
+          location: row.location ?? undefined,
+          category: row.event_category ?? undefined,
+          distance: row.distance ?? undefined,
+          price_range: undefined,
+          organizer: undefined,
+          is_featured: false,
+          registration_url: row.link ?? undefined,
+        })) || [];
       }
 
       setEvents(rows);

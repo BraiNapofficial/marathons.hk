@@ -15,7 +15,7 @@ const Hero = () => {
   const fetchEventCount = async () => {
     try {
       const { count } = await supabase
-        .from('events')
+        .from('marathons.hk')
         .select('*', { count: 'exact', head: true });
       
       if (count) setEventCount(count);
