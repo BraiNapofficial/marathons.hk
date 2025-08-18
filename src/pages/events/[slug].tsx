@@ -13,13 +13,15 @@ export default function EventPage({ event, relatedEvents }: EventPageProps) {
   const siteUrl = 'https://marathons.hk';
   const eventUrl = `${siteUrl}/events/${event.slug}`;
 
-  // Structured data for SEO
+  // Enhanced structured data for SEO with SportsEvent schema
+  // Validate with Google Rich Results Test: https://search.google.com/test/rich-results
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "SportsEvent",
     "name": event.title_zh,
     "description": event.description || `${event.title_zh} - ${event.location}`,
     "startDate": event.date + (event.time ? `T${event.time}:00+08:00` : 'T06:00:00+08:00'),
+    "endDate": event.date + (event.time ? `T${event.time}:00+08:00` : 'T18:00:00+08:00'),
     "location": {
       "@type": "Place",
       "name": event.location,
@@ -31,19 +33,27 @@ export default function EventPage({ event, relatedEvents }: EventPageProps) {
     },
     "organizer": {
       "@type": "Organization",
-      "name": event.organizer || "足•包 marathons.hk"
+      "name": event.organizer || "足•包 marathons.hk",
+      "url": siteUrl
     },
-    "offers": event.price ? {
+    "offers": {
       "@type": "Offer",
-      "price": event.price,
+      "price": event.price || 0,
       "priceCurrency": "HKD",
-      "url": event.registration_url,
-      "availability": event.status === 'registration_open' ? 
-        "https://schema.org/InStock" : "https://schema.org/OutOfStock"
-    } : undefined,
+      "url": event.registration_url || `${siteUrl}/events`,
+      "availability": event.status === 'registration_open' ?
+        "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      "validFrom": new Date().toISOString().split('T')[0]
+    },
+    "performer": {
+      "@type": "SportsTeam",
+      "name": "跑步參與者"
+    },
     "sport": "Running",
-    "eventStatus": event.status === 'completed' ? 
-      "https://schema.org/EventScheduled" : "https://schema.org/EventScheduled",
+    "eventStatus":
+      event.status === 'completed' ? "https://schema.org/EventCompleted" :
+      event.status === 'cancelled' ? "https://schema.org/EventCancelled" :
+      "https://schema.org/EventScheduled",
     "url": eventUrl,
     "image": event.image_url ? `${siteUrl}${event.image_url}` : `${siteUrl}/hero-image.webp`
   };

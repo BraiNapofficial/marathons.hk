@@ -23,21 +23,26 @@ function hkTodayYYYYMMDD() {
 function normalizeDateParam(value: string | string[] | undefined): string | null {
   if (!value) return null;
   const v = (Array.isArray(value) ? value[0] : value).trim();
-  // Accept explicit ISO YYYY-MM-DD straight through
+  
+  // Accept explicit ISO YYYY-MM-DD
   if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
-  // Accept DD/MM/YYYY and convert
-  const ddmmyyyy = v.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  
+  // Accept DD/MM/YYYY
+  const ddmmyyyy = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
   if (ddmmyyyy) {
     const [, dd, mm, yyyy] = ddmmyyyy;
-    return `${yyyy}-${mm}-${dd}`;
+    return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
   }
-  // Fallback: try Date parsing, but if invalid, return null to use HK today
-  const date = new Date(v);
-  if (Number.isNaN(date.getTime())) return null;
-  const yyyy = date.getFullYear();
-  const mm = `${date.getMonth() + 1}`.padStart(2, '0');
-  const dd = `${date.getDate()}`.padStart(2, '0');
-  return `${yyyy}-${mm}-${dd}`;
+  
+  // Accept MM/DD/YYYY
+  const mmddyyyy = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (mmddyyyy) {
+    const [, mm, dd, yyyy] = mmddyyyy;
+    return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
+  }
+  
+  // Fallback to today's date if parsing fails
+  return null;
 }
 
 function normalizeStringParam(value: string | string[] | undefined): string | null {
@@ -63,12 +68,23 @@ export const getServerSideProps: GetServerSideProps<EventsPageProps> = async (ct
     .order('event_date', { ascending: true });
 
   if (category) {
-    sb = sb.eq('event_category', category);
+    // Map Chinese category names to English equivalents
+    const categoryMap: Record<string, string> = {
+      '馬拉松': 'Marathon',
+      '半程馬拉松': 'Half Marathon',
+      '10公里': '10K',
+      '5公里': '5K',
+      '越野跑': 'Trail Run'
+    };
+    const englishCategory = categoryMap[category] || category;
+    sb = sb.eq('event_category', englishCategory);
   }
 
   if (q) {
     // Search by event_name or location (case-insensitive)
-    sb = sb.or(`event_name.ilike.%${q}%,location.ilike.%${q}%`);
+    // Sanitize search query by escaping special characters
+    const sanitizedQ = q.replace(/([\\%_])/g, '\\$1');
+    sb = sb.or(`event_name.ilike.%${sanitizedQ}%,location.ilike.%${sanitizedQ}%`);
   }
 
   const { data, error } = await sb;
