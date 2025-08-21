@@ -19,6 +19,31 @@ function hkTodayYYYYMMDD(): string {
   return `${year}-${month}-${day}`
 }
 
+// Helper: get first day of current month in YYYY-MM-DD format
+function getFirstDayOfCurrentMonth(): string {
+  const now = new Date()
+  const hk = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' }))
+  const year = hk.getFullYear()
+  const month = `${hk.getMonth() + 1}`.padStart(2, '0')
+  return `${year}-${month}-01`
+}
+
+// Helper: get last day of next month in YYYY-MM-DD format
+function getLastDayOfNextMonth(): string {
+  const now = new Date()
+  const hk = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' }))
+  // Move to next month
+  hk.setMonth(hk.getMonth() + 2)
+  // Set to first day of that month
+  hk.setDate(1)
+  // Go back one day to get last day of next month
+  hk.setDate(hk.getDate() - 1)
+  const year = hk.getFullYear()
+  const month = `${hk.getMonth() + 1}`.padStart(2, '0')
+  const day = `${hk.getDate()}`.padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 // Map DB row (from marathons.hk) to EventRow expected by EventsTable
 function mapDbToEventRow(row: {
   id: string | number;
@@ -91,6 +116,14 @@ export default function Home({ events }: HomeProps) {
               </div>
               {/* Table with headerless action handled inside EventsTable (button under title on small screens already) */}
               <EventsTable events={events} />
+              <div className="mt-8 text-center">
+                <a 
+                  href="/events/" 
+                  className="inline-block px-6 py-3 bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors text-base font-medium"
+                >
+                  更多活動
+                </a>
+              </div>
             </div>
           </div>
         </section>
@@ -105,11 +138,13 @@ export default function Home({ events }: HomeProps) {
 
 export async function getServerSideProps() {
   try {
-    const today = hkTodayYYYYMMDD();
+    const startDate = getFirstDayOfCurrentMonth();
+    const endDate = getLastDayOfNextMonth();
     const { data, error } = await supabase
       .from('marathons.hk')
       .select('id, event_name, event_date, event_category, distance, location, link')
-      .gte('event_date', today)
+      .gte('event_date', startDate)
+      .lte('event_date', endDate)
       .order('event_date', { ascending: true });
 
     if (error) {
