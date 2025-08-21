@@ -71,7 +71,7 @@ const Hero = () => {
         <div className="absolute inset-0 bg-black/50"></div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 flex flex-col justify-center items-center h-full pt-8 md:pt-0 pb-12 md:pb-0">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 flex flex-col justify-center items-center h-full pt-8 md:pt-0 pb-6 md:pb-0">
         <div className="max-w-4xl mx-auto w-full">
           {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-white mb-2 md:mb-6 text-shadow-md animate-fade-in-up">
@@ -110,7 +110,7 @@ const Hero = () => {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 max-w-3xl mx-auto animate-fade-in-up -mt-2 md:mt-0" style={{animationDelay: '0.8s'}}>
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 max-w-3xl mx-auto animate-fade-in-up" style={{animationDelay: '0.8s'}}>
             <div className="glass-effect rounded-lg p-3 sm:p-4 text-center card-hover">
               <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-accent mx-auto mb-1 sm:mb-3" />
               <div className="text-xl sm:text-2xl font-bold text-white mb-1">
