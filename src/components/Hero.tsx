@@ -71,7 +71,7 @@ const Hero = () => {
         <div className="absolute inset-0 bg-black/50"></div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 flex flex-col justify-center items-center h-full pt-8 md:pt-0 pb-6 md:pb-0">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 flex flex-col justify-center items-center h-full pt-8 md:pt-0 pb-16 md:pb-0">
         <div className="max-w-4xl mx-auto w-full">
           {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-white mb-2 md:mb-6 text-shadow-md animate-fade-in-up">

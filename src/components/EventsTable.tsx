@@ -22,29 +22,27 @@ function formatDate(iso: string) {
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return iso;
     
+    // Custom month abbreviations to ensure 3-letter format
+    const monthAbbrs = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    
+    const day = d.getDate();
+    const month = monthAbbrs[d.getMonth()];
+    const year = d.getFullYear();
+    
     // Render as "17 Aug 2025" on desktop
-    const desktopFormat = new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Asia/Hong_Kong',
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    }).format(d).replace(',', '');
+    const desktopFormat = `${day} ${month} ${year}`;
     
     // Render as "17 Aug\n2025" on mobile
-    const mobileDay = d.getDate();
-    const mobileMonth = d.toLocaleString('en-GB', {
-      month: 'short',
-      timeZone: 'Asia/Hong_Kong'
-    });
-    const mobileYear = d.getFullYear();
-    
     return (
       <>
         <span className="hidden sm:inline">{desktopFormat}</span>
         <span className="sm:hidden">
-          <span>{mobileDay} {mobileMonth}</span>
+          <span>{day} {month}</span>
           <br />
-          <span className="block text-right">{mobileYear}</span>
+          <span className="block text-right">{year}</span>
         </span>
       </>
     );
