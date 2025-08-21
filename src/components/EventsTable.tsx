@@ -78,7 +78,7 @@ const EventsTable: React.FC<Props> = ({ events }) => {
         <tbody>
           {events.map((e) => (
             <tr key={e.id} className="border-t border-border hover:bg-muted/30">
-              <td className="px-2 py-2 sm:px-3 sm:py-3 align-top whitespace-nowrap text-sm">{formatDate(e.date)}</td>
+              <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle whitespace-nowrap text-sm">{formatDate(e.date)}</td>
               <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle">
                 <div className="font-medium text-foreground text-sm sm:text-base">{e.title_zh || '未命名活動'}</div>
                 <div className="mt-1 flex gap-2 sm:hidden text-xs text-muted-foreground">

@@ -56,7 +56,7 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="relative min-h-[50vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden py-8 md:py-0"
+      className="relative min-h-[50vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden"
     >
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
@@ -134,7 +134,7 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator - moved outside the container to be positioned relative to the section */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-10">
         <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
           <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-pulse"></div>
