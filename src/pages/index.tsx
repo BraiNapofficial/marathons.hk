@@ -61,6 +61,9 @@ type HomeProps = {
 }
 
 export default function Home({ events }: HomeProps) {
+  // Get the date range for the "更多活動" button
+  const startDate = getFirstDayOfCurrentMonth();
+  
   return (
     <>
       <Head>
@@ -106,8 +109,8 @@ export default function Home({ events }: HomeProps) {
               <EventsTable events={events} />
               <div className="mt-8 text-center">
                 <Link 
-                  href="/events/" 
-                  className="inline-block px-6 py-3 bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors text-base font-medium"
+                  href={`/events/?from=${startDate}`}
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-accent text-accent-foreground hover:bg-accent/90 h-10 px-4 py-2"
                 >
                   更多活動
                 </Link>

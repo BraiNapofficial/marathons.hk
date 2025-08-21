@@ -132,12 +132,12 @@ Day 3-4: Database & Core Structure
 - [x] Events table creation (Chinese-optimized schema)
 - [x] Basic read access via Supabase client
 - [x] RLS policy for anon read upcoming-only on public."marathons.hk"
-- [ ] Ensure indexes on date/category exist (add index on event_date)
+- [x] Ensure indexes on date/category exist (add index on event_date) — Confirmed: idx_events_date and idx_events_category indexes exist on public."marathons.hk" table
 - [x] Rotate any previously exposed anon key after moving to env vars — Note: Old Supabase project deleted; new project created; anon key stored only in .env.local and Vercel env.
 
 Day 5-7: Data & Configuration
 - [x] Manual data curation (66 events available)
-- [ ] Validate data quality (slug uniqueness, valid URLs, dates)
+- [x] Validate data quality (slug uniqueness, valid URLs, dates) — Confirmed: No duplicate slugs, all URLs valid, all dates properly formatted
 - [x] Convert event_date to DATE type in Supabase (was text like "13 Jul 2025")
 - [x] Environment variables on local and Vercel
 - [x] Remove hardcoded keys from repo and rotate Supabase anon key — Note: Old Supabase project deleted; new project created; anon key stored only in .env.local and Vercel env.
