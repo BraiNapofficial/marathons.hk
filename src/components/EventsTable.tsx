@@ -79,10 +79,12 @@ const EventsTable: React.FC<Props> = ({ events }) => {
               <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle whitespace-nowrap text-sm">{formatDate(e.date)}</td>
               <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle">
                 <div className="font-medium text-foreground text-sm sm:text-base">{e.title_zh || '未命名活動'}</div>
-                <div className="mt-1 flex gap-2 sm:hidden text-xs text-muted-foreground">
-                  <span>{e.category || '其他'}</span>
-                  <span>•</span>
-                  <span>{e.location || '—'}</span>
+                <div className="mt-1 sm:hidden text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <span className="whitespace-nowrap">{e.category || '其他'}</span>
+                    <span>•</span>
+                    <span className="truncate">{e.location || '—'}</span>
+                  </div>
                 </div>
               </td>
               <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle hidden sm:table-cell text-sm">{e.category || '其他'}</td>
