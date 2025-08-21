@@ -1,23 +1,11 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import Hero from '@/components/Hero'
 import AboutSection from '@/components/AboutSection'
 import ContactSection from '@/components/ContactSection'
 import Footer from '@/components/Footer'
 import EventsTable, { EventRow } from '@/components/EventsTable'
 import { supabase } from '@/lib/supabase'
-
-// Helper: format a JS Date to YYYY-MM-DD in Asia/Hong_Kong
-function hkTodayYYYYMMDD(): string {
-  const now = new Date()
-  const fmt = new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Asia/Hong_Kong',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-  const [day, month, year] = fmt.format(now).split('/')
-  return `${year}-${month}-${day}`
-}
 
 // Helper: get first day of current month in YYYY-MM-DD format
 function getFirstDayOfCurrentMonth(): string {
@@ -117,12 +105,12 @@ export default function Home({ events }: HomeProps) {
               {/* Table with headerless action handled inside EventsTable (button under title on small screens already) */}
               <EventsTable events={events} />
               <div className="mt-8 text-center">
-                <a 
+                <Link 
                   href="/events/" 
                   className="inline-block px-6 py-3 bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors text-base font-medium"
                 >
                   更多活動
-                </a>
+                </Link>
               </div>
             </div>
           </div>
