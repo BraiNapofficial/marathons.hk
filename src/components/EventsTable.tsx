@@ -97,7 +97,7 @@ const EventsTable: React.FC<Props> = ({ events }) => {
                       href={e.registration_url}
                       target="_blank"
                       rel="noopener"
-                      className="inline-flex items-center justify-center rounded-md border border-accent text-accent hover:bg-accent hover:text-accent-foreground px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm transition-colors"
+                      className="inline-flex items-center justify-center rounded-md border border-accent text-accent hover:bg-accent hover:text-accent-foreground px-1.5 py-0.5 sm:px-3 sm:py-1.5 text-[0.65rem] sm:text-sm transition-colors"
                     >
                       立即報名
                     </a>
