@@ -71,7 +71,7 @@ const Hero = () => {
         <div className="absolute inset-0 bg-black/50"></div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 flex flex-col justify-center items-center h-full pt-8 md:pt-0">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 flex flex-col justify-center items-center h-full pt-8 md:pt-0 pb-12 md:pb-0">
         <div className="max-w-4xl mx-auto w-full">
           {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-white mb-2 md:mb-6 text-shadow-md animate-fade-in-up">
@@ -84,7 +84,7 @@ const Hero = () => {
           </p>
           
           {/* Description */}
-          <p className="text-base md:text-lg text-white/80 mb-6 md:mb-12 max-w-2xl mx-auto font-body leading-normal text-shadow-md animate-fade-in-up" style={{animationDelay: '0.4s'}}>
+          <p className="text-sm md:text-lg text-white/80 mb-6 md:mb-12 max-w-2xl mx-auto font-body leading-normal text-shadow-md animate-fade-in-up" style={{animationDelay: '0.4s'}}>
             從馬拉松到越野跑，從初學者到專業選手，找到最適合你的跑步活動。
             立即加入香港跑步社群，開始你的跑步旅程。
           </p>
@@ -110,7 +110,7 @@ const Hero = () => {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 max-w-3xl mx-auto animate-fade-in-up" style={{animationDelay: '0.8s'}}>
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 max-w-3xl mx-auto animate-fade-in-up -mt-2 md:mt-0" style={{animationDelay: '0.8s'}}>
             <div className="glass-effect rounded-lg p-3 sm:p-4 text-center card-hover">
               <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-accent mx-auto mb-1 sm:mb-3" />
               <div className="text-xl sm:text-2xl font-bold text-white mb-1">
@@ -136,7 +136,7 @@ const Hero = () => {
 
       {/* Scroll indicator - centered using flex and positioned near bottom */}
       <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-        <div className="absolute bottom-4 md:bottom-8 animate-bounce pointer-events-auto">
+        <div className="absolute bottom-2 md:bottom-8 animate-bounce pointer-events-auto">
           <div className="w-4 h-6 md:w-6 md:h-10 border-2 border-white/50 rounded-full flex justify-center">
             <div className="w-1 h-1.5 md:w-1 md:h-3 bg-white/50 rounded-full mt-1 md:mt-2 animate-pulse"></div>
           </div>
