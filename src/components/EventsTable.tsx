@@ -28,14 +28,14 @@ function formatDate(iso: string) {
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
     
-    const day = d.getDate();
+    const day = d.getDate().toString().padStart(2, '0'); // Ensure 2-digit day
     const month = monthAbbrs[d.getMonth()];
     const year = d.getFullYear();
     
-    // Render as "17 Aug 2025" on desktop
+    // Render as "01 Aug 2025" on desktop
     const desktopFormat = `${day} ${month} ${year}`;
     
-    // Render as "17 Aug\n2025" on mobile
+    // Render as "01 Aug\n2025" on mobile
     return (
       <>
         <span className="hidden sm:inline">{desktopFormat}</span>
