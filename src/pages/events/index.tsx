@@ -1,11 +1,15 @@
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
+import { useState, useMemo } from 'react';
+import { useRouter } from 'next/router';
 import EventsTable, { EventRow } from '@/components/EventsTable';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
+import BackButton from '@/components/ui/back-button';
 
 type EventsPageProps = {
   events: EventRow[];
+  categories: string[];
   category: string | null;
   from: string | null;
   q: string | null;
@@ -20,31 +24,6 @@ function hkTodayYYYYMMDD() {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-function normalizeDateParam(value: string | string[] | undefined): string | null {
-  if (!value) return null;
-  const v = (Array.isArray(value) ? value[0] : value).trim();
-  
-  // Accept explicit ISO YYYY-MM-DD
-  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
-  
-  // Accept DD/MM/YYYY
-  const ddmmyyyy = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if (ddmmyyyy) {
-    const [, dd, mm, yyyy] = ddmmyyyy;
-    return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
-  }
-  
-  // Accept MM/DD/YYYY
-  const mmddyyyy = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if (mmddyyyy) {
-    const [, mm, dd, yyyy] = mmddyyyy;
-    return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
-  }
-  
-  // Fallback to today's date if parsing fails
-  return null;
-}
-
 function normalizeStringParam(value: string | string[] | undefined): string | null {
   if (!value) return null;
   const v = Array.isArray(value) ? value[0] : value;
@@ -54,35 +33,31 @@ function normalizeStringParam(value: string | string[] | undefined): string | nu
 
 export const getServerSideProps: GetServerSideProps<EventsPageProps> = async (ctx) => {
   const { query } = ctx;
-  const category = normalizeStringParam(query.category);
   const q = normalizeStringParam(query.q);
+  const fromParam = normalizeStringParam(query.from);
 
-  // Default to HK "today" for upcoming-only
-  const from = normalizeDateParam(query.from) ?? hkTodayYYYYMMDD();
+  // Validate and use the from parameter, or default to today
+  let from = hkTodayYYYYMMDD();
+  if (fromParam) {
+    // Validate YYYY-MM-DD format
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (dateRegex.test(fromParam)) {
+      const parsedDate = new Date(fromParam);
+      if (!isNaN(parsedDate.getTime())) {
+        from = fromParam;
+      }
+    }
+  }
 
-  // Build Supabase query against public."marathons.hk"
+  // Fetch only future events from the specified date
   let sb = supabase
     .from('marathons.hk')
-    .select('id, event_name, event_date, event_category, distance, location, link')
+    .select('id, event_name, event_date, event_category, distance, location, link, english_slug_base')
     .gte('event_date', from)
     .order('event_date', { ascending: true });
 
-  if (category) {
-    // Map Chinese category names to English equivalents
-    const categoryMap: Record<string, string> = {
-      '馬拉松': 'Marathon',
-      '半程馬拉松': 'Half Marathon',
-      '10公里': '10K',
-      '5公里': '5K',
-      '越野跑': 'Trail Run'
-    };
-    const englishCategory = categoryMap[category] || category;
-    sb = sb.eq('event_category', englishCategory);
-  }
-
+  // Apply search filter server-side (if provided)
   if (q) {
-    // Search by event_name or location (case-insensitive)
-    // Sanitize search query by escaping special characters
     const sanitizedQ = q.replace(/([\\%_])/g, '\\$1');
     sb = sb.or(`event_name.ilike.%${sanitizedQ}%,location.ilike.%${sanitizedQ}%`);
   }
@@ -93,7 +68,8 @@ export const getServerSideProps: GetServerSideProps<EventsPageProps> = async (ct
     return {
       props: {
         events: [],
-        category: category ?? null,
+        categories: [],
+        category: normalizeStringParam(query.category) ?? null,
         from,
         q: q ?? null,
       },
@@ -108,37 +84,123 @@ export const getServerSideProps: GetServerSideProps<EventsPageProps> = async (ct
     event_category?: string;
     distance?: string;
     link?: string;
+    english_slug_base?: string;
   }) => ({
-    id: e.id,
+    id: String(e.id),
     title_zh: e.event_name ?? '未命名活動',
-    date: e.event_date, // Postgres DATE -> "YYYY-MM-DD"
+    date: e.event_date,
     location: e.location ?? null,
     category: e.event_category ?? null,
     distance: e.distance ?? null,
-    price_range: null,
     registration_url: e.link ?? null,
-    slug: null,
+    slug: e.english_slug_base ?? null,
   })) as EventRow[];
+
+  // Get categories from future events only
+  const uniqueCategories = Array.from(new Set(
+    events.map(e => e.category).filter((cat): cat is string => Boolean(cat))
+  ));
 
   return {
     props: {
       events,
-      category: category ?? null,
+      categories: uniqueCategories,
+      category: normalizeStringParam(query.category) ?? null,
       from,
       q: q ?? null,
     },
   };
 };
 
-export default function EventsPage({ events, category, from, q }: EventsPageProps) {
-  const categories = ['全部分類', '馬拉松', '半程馬拉松', '10公里', '5公里', '越野跑'];
+export default function EventsPage({ events, categories = [], category, q }: EventsPageProps) {
+  const router = useRouter();
+  const [selectedCategory, setSelectedCategory] = useState(category || '');
+  const [selectedFrom, setSelectedFrom] = useState(hkTodayYYYYMMDD()); // Reset to today on every load
+
+  // Hybrid: server-provided events + client-side instant filtering
+  const filteredEvents = useMemo(() => {
+    let base = events;
+    // Apply date filter client-side
+    if (selectedFrom) {
+      base = base.filter(event => event.date >= selectedFrom);
+    }
+    // Apply category filter client-side
+    if (selectedCategory) {
+      base = base.filter(event => event.category === selectedCategory);
+    }
+    return base;
+  }, [events, selectedCategory, selectedFrom]);
+
+  // Handle category change with instant filtering and URL update
+  const handleCategoryChange = (newCategory: string) => {
+    setSelectedCategory(newCategory);
+    
+    // Update URL without page reload (shallow routing)
+    const params = new URLSearchParams();
+    if (newCategory) params.set('category', newCategory);
+    if (q) params.set('q', q);
+    if (selectedFrom) params.set('from', selectedFrom);
+    
+    const url = `/events${params.toString() ? `?${params.toString()}` : ''}`;
+    
+    // Use try-catch to handle potential router issues
+    try {
+      router.push(url, undefined, { shallow: true });
+    } catch (error) {
+      console.warn('Router navigation failed:', error);
+    }
+  };
+
+  // Handle date change with instant filtering and URL update
+  const handleFromChange = (newFrom: string) => {
+    setSelectedFrom(newFrom);
+    
+    // Update URL without page reload (shallow routing)
+    const params = new URLSearchParams();
+    if (selectedCategory) params.set('category', selectedCategory);
+    if (q) params.set('q', q);
+    if (newFrom) params.set('from', newFrom);
+    
+    const url = `/events${params.toString() ? `?${params.toString()}` : ''}`;
+    
+    // Use try-catch to handle potential router issues
+    try {
+      router.push(url, undefined, { shallow: true });
+    } catch (error) {
+      console.warn('Router navigation failed:', error);
+    }
+  };
 
   return (
     <>
       <Head>
         <title>活動列表 - 足•包 | marathons.hk</title>
         <meta name="description" content="瀏覽香港馬拉松及跑步活動列表，支援分類、日期與關鍵字搜尋。" />
-        <link rel="canonical" href="https://marathons.hk/events" />
+        <link rel="canonical" href="https://marathons.hk/events/" />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://marathons.hk/events/" />
+        <meta property="og:title" content="活動列表 - 足•包 | marathons.hk" />
+        <meta property="og:description" content="瀏覽香港馬拉松及跑步活動列表，支援分類、日期與關鍵字搜尋。" />
+        <meta property="og:image" content="https://marathons.hk/hero-image.webp" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="足•包 - 香港馬拉松活動列表頁面" />
+        <meta property="og:site_name" content="足•包 marathons.hk" />
+        <meta property="og:locale" content="zh_HK" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://marathons.hk/events/" />
+        <meta name="twitter:title" content="活動列表 - 足•包 | marathons.hk" />
+        <meta name="twitter:description" content="瀏覽香港馬拉松及跑步活動列表，支援分類、日期與關鍵字搜尋。" />
+        <meta name="twitter:image" content="https://marathons.hk/hero-image.webp" />
+        <meta name="twitter:image:alt" content="足•包 - 香港馬拉松活動列表頁面" />
+        <meta name="twitter:domain" content="marathons.hk" />
+        {/* Add your Twitter handle here when available */}
+        {/* <meta name="twitter:site" content="@yourusername" /> */}
+        {/* <meta name="twitter:creator" content="@yourusername" /> */}
       </Head>
 
       <main className="min-h-screen bg-background">
@@ -150,15 +212,16 @@ export default function EventsPage({ events, category, from, q }: EventsPageProp
                 <p className="text-muted-foreground">從今天開始的活動，支援分類與關鍵字搜尋</p>
               </header>
 
-              <form method="get" className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-3">
+              <form method="get" className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-3">
                 <div>
                   <label htmlFor="from" className="block text-sm text-muted-foreground mb-1">開始日期</label>
                   <input
                     id="from"
                     name="from"
                     type="date"
-                    defaultValue={from ?? ''}
-                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                    value={selectedFrom}
+                    onChange={(e) => handleFromChange(e.target.value)}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground [color-scheme:dark]"
                   />
                 </div>
 
@@ -167,11 +230,12 @@ export default function EventsPage({ events, category, from, q }: EventsPageProp
                   <select
                     id="category"
                     name="category"
-                    defaultValue={category ?? ''}
+                    value={selectedCategory}
+                    onChange={(e) => handleCategoryChange(e.target.value)}
                     className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
                   >
                     <option value="">全部分類</option>
-                    {categories.slice(1).map((c) => (
+                    {(categories || []).map((c) => (
                       <option key={c} value={c}>{c}</option>
                     ))}
                   </select>
@@ -193,19 +257,26 @@ export default function EventsPage({ events, category, from, q }: EventsPageProp
                   <Link
                     href="/events"
                     className="px-4 py-2 border border-border rounded-md text-sm hover:bg-muted"
+                    onClick={() => {
+                      setSelectedFrom(hkTodayYYYYMMDD());
+                      setSelectedCategory('');
+                    }}
                   >
                     重設
                   </Link>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-accent text-accent-foreground rounded-md text-sm hover:bg-accent/90"
+                    className="px-4 py-2 border border-border rounded-md text-sm hover:bg-muted"
                   >
-                    篩選
+                    搜尋
                   </button>
                 </div>
               </form>
 
-              <EventsTable events={events} />
+              <div className="relative">
+                <EventsTable events={filteredEvents} />
+              </div>
+              <BackButton />
             </div>
           </div>
         </section>

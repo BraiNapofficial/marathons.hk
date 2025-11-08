@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Phone, MapPin, MessageCircle, Send, ChevronDown, ChevronUp } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Mail, Send, Instagram } from 'lucide-react';
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +11,9 @@ const ContactSection = () => {
     message: ''
   });
 
-  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -19,59 +21,122 @@ const ContactSection = () => {
       ...prev,
       [name]: value
     }));
+    
+    // Reset error status when user starts typing again
+    if (submitStatus === 'error') {
+      setSubmitStatus('idle');
+      setErrorMessage('');
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = () => {
+    if (!formData.name.trim()) {
+      setErrorMessage('請輸入您的姓名');
+      return false;
+    }
+    
+    if (!formData.email.trim()) {
+      setErrorMessage('請輸入您的電子郵件');
+      return false;
+    }
+    
+    // Simple email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setErrorMessage('請輸入有效的電子郵件地址');
+      return false;
+    }
+    
+    if (!formData.subject.trim()) {
+      setErrorMessage('請輸入主題');
+      return false;
+    }
+    
+    if (!formData.message.trim()) {
+      setErrorMessage('請輸入訊息內容');
+      return false;
+    }
+    
+    if (formData.message.trim().length < 10) {
+      setErrorMessage('訊息內容至少需要10個字符');
+      return false;
+    }
+    
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
+    
+    if (!validateForm()) {
+      setSubmitStatus('error');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    
+    try {
+      // Send form data to API route
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
+      
+      // Show success message
+      setSubmitStatus('success');
+      
+      // Reset form after successful submission
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+      
+      // Reset success message after 5 seconds
+      setTimeout(() => {
+        setSubmitStatus('idle');
+      }, 5000);
+      
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setSubmitStatus('error');
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : '提交失敗，請稍後再試。如問題持續，請直接發送電子郵件至 support@marathons.hk'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
     {
       icon: Mail,
       title: '電子郵件',
-      content: 'info@marathonhk.com',
+      content: 'support@marathons.hk',
       description: '我們會在24小時內回覆您的查詢'
     },
-    {
-      icon: Phone,
-      title: '電話',
-      content: '+852 1234 5678',
-      description: '週一至週五 9:00-18:00'
-    },
-    {
-      icon: MapPin,
-      title: '地址',
-      content: '香港中環德輔道中123號',
-      description: '歡迎預約到訪我們的辦公室'
-    },
-    {
-      icon: MessageCircle,
-      title: '社交媒體',
-      content: '@marathonhk',
+        {
+      icon: Instagram,
+      title: 'Instagram',
+      content: 'marathonshk',
+      href: 'https://www.instagram.com/marathonshk/',
       description: '關注我們獲取最新活動資訊'
     }
   ];
 
-  const faqs = [
-    {
-      question: '如何報名參加活動？',
-      answer: '點擊活動卡片上的「立即報名」按鈕，您將被導向到主辦方的官方報名頁面。請按照主辦方的指示完成報名程序。'
-    },
-    {
-      question: '活動資訊多久更新一次？',
-      answer: '我們每天都會更新活動資訊，確保您獲得最新、最準確的活動詳情。如發現任何錯誤資訊，請立即聯絡我們。'
-    },
-    {
-      question: '可以提交新的活動資訊嗎？',
-      answer: '當然可以！如果您知道任何我們尚未收錄的跑步活動，歡迎透過聯絡表單或電子郵件告訴我們。'
-    },
-    {
-      question: '是否提供活動提醒服務？',
-      answer: '目前我們正在開發活動提醒功能，敬請期待。您可以關注我們的社交媒體獲取最新活動資訊。'
-    }
-  ];
 
   return (
     <section id="contact" className="py-20 bg-background">
@@ -87,7 +152,7 @@ const ContactSection = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Contact Information */}
             <div>
               <h3 className="text-2xl font-semibold text-foreground mb-6">聯絡資訊</h3>
@@ -100,12 +165,23 @@ const ContactSection = () => {
                   const IconComponent = info.icon;
                   return (
                     <div key={index} className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
-                        <IconComponent className="w-6 h-6 text-accent" />
+                      <div className="flex-shrink-0 w-12 h-12 bg-accent/10 rounded-lg flex items-start justify-center pt-0">
+                        <IconComponent className="w-6 h-6 text-accent mt-0" />
                       </div>
-                      <div>
-                        <h4 className="font-semibold text-foreground mb-1">{info.title}</h4>
-                        <p className="text-accent font-medium mb-1">{info.content}</p>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-foreground mb-1 mt-0">{info.title}</h4>
+                        {info.href ? (
+                          <a
+                            href={info.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent font-medium mb-1 hover:underline"
+                          >
+                            {info.content}
+                          </a>
+                        ) : (
+                          <p className="text-accent font-medium mb-1">{info.content}</p>
+                        )}
                         <p className="text-sm text-muted-foreground">{info.description}</p>
                       </div>
                     </div>
@@ -115,11 +191,28 @@ const ContactSection = () => {
             </div>
 
             {/* Contact Form */}
-            <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle className="text-foreground">發送訊息</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div>
+              <h3 className="text-2xl font-semibold text-foreground mb-6 pl-6">發送訊息</h3>
+              <Card className="bg-card border-border">
+                <CardContent className="pt-0">
+                {/* Success Message */}
+                {submitStatus === 'success' && (
+                  <div className="mb-4 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                    <p className="text-green-500 text-sm">
+                      ✓ 您的訊息已成功發送！我們會在24小時內回覆您。
+                    </p>
+                  </div>
+                )}
+                
+                {/* Error Message */}
+                {submitStatus === 'error' && (
+                  <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+                    <p className="text-red-500 text-sm">
+                      ✗ {errorMessage}
+                    </p>
+                  </div>
+                )}
+                
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
@@ -181,47 +274,30 @@ const ContactSection = () => {
                     />
                   </div>
 
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     size="lg"
-                    className="w-full bg-accent hover:bg-accent/90 text-white flex items-center justify-center gap-2"
+                    disabled={isSubmitting}
+                    className="w-full bg-accent hover:bg-accent/90 text-white flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Send className="w-4 h-4" />
-                    發送訊息
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        發送中...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        發送訊息
+                      </>
+                    )}
                   </Button>
                 </form>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* FAQ Section */}
-          <div className="mt-20">
-            <h3 className="text-2xl font-semibold text-foreground mb-8 text-center">常見問題</h3>
-            <div className="max-w-3xl mx-auto space-y-4">
-              {faqs.map((faq, index) => (
-                <Card key={index} className="bg-card border-border">
-                  <CardHeader 
-                    className="cursor-pointer"
-                    onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg text-foreground">{faq.question}</CardTitle>
-                      {expandedFaq === index ? (
-                        <ChevronUp className="w-5 h-5 text-accent" />
-                      ) : (
-                        <ChevronDown className="w-5 h-5 text-accent" />
-                      )}
-                    </div>
-                  </CardHeader>
-                  {expandedFaq === index && (
-                    <CardContent>
-                      <p className="text-muted-foreground">{faq.answer}</p>
-                    </CardContent>
-                  )}
-                </Card>
-              ))}
+                </CardContent>
+              </Card>
             </div>
           </div>
+
         </div>
       </div>
     </section>

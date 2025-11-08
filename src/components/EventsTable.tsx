@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export type EventRow = {
   id: string;
@@ -7,7 +8,6 @@ export type EventRow = {
   location?: string | null;
   category?: string | null;
   distance?: string | null;
-  price_range?: string | null;
   registration_url?: string | null;
   status?: string | null; // optional derived field if available later
   slug?: string | null;
@@ -62,14 +62,14 @@ const EventsTable: React.FC<Props> = ({ events }) => {
 
   return (
     <div className="w-full overflow-x-auto rounded-md border border-border shadow-sm">
-      <table className="w-full border-collapse text-sm">
+      <table className="w-full border-collapse text-sm table-fixed">
         <thead className="bg-muted/50 sticky top-0">
           <tr>
-            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground">日期</th>
+            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground w-[100px] sm:w-[120px]">日期</th>
             <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground">活動名稱</th>
-            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground hidden sm:table-cell">分類</th>
-            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground hidden lg:table-cell">距離</th>
-            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground hidden sm:table-cell">地點</th>
+            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground hidden sm:table-cell w-[80px] sm:w-[100px]">分類</th>
+            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground hidden lg:table-cell w-[80px] sm:w-[100px]">距離</th>
+            <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground hidden sm:table-cell w-[120px] sm:w-[150px]">地點</th>
             <th scope="col" className="px-2 py-2 sm:px-3 sm:py-3 text-left font-semibold text-foreground w-24 sm:w-28"></th>
           </tr>
         </thead>
@@ -78,7 +78,19 @@ const EventsTable: React.FC<Props> = ({ events }) => {
             <tr key={e.id} className="border-t border-border hover:bg-muted/30">
               <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle whitespace-nowrap text-sm">{formatDate(e.date)}</td>
               <td className="px-2 py-2 sm:px-3 sm:py-3 align-middle">
-                <div className="font-medium text-foreground text-sm sm:text-base">{e.title_zh || '未命名活動'}</div>
+                {e.slug ? (
+                  <Link
+                    href={`/events/${e.slug}/`}
+                    className="font-medium text-foreground text-sm sm:text-base hover:text-accent hover:underline transition-colors"
+                    aria-label={`查看 ${e.title_zh || '未命名活動'} 詳情`}
+                  >
+                    {e.title_zh || '未命名活動'}
+                  </Link>
+                ) : (
+                  <div className="font-medium text-foreground text-sm sm:text-base" title="詳情即將推出">
+                    {e.title_zh || '未命名活動'}
+                  </div>
+                )}
                 <div className="mt-1 sm:hidden text-xs text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <span className="whitespace-nowrap">{e.category || '其他'}</span>

@@ -13,10 +13,13 @@
     "@supabase/supabase-js": "^2.53.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
     "lucide-react": "^0.535.0",
     "next": "^14.2.31",
+    "node-fetch": "^3.3.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "resend": "^3.0.0",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
@@ -28,7 +31,7 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.2"
   }
 }

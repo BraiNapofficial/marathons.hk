@@ -26,7 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <React.Fragment>
       <Head>
-        <title>{siteTitle}</title>
+        <title>{String(siteTitle)}</title>
         <meta name="description" content={siteDescription} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
@@ -35,8 +35,6 @@ export default function App({ Component, pageProps }: AppProps) {
         />
         <meta name="author" content="足•包 marathons.hk" />
 
-        {/* Canonical */}
-        <link rel="canonical" href={`${siteUrl}/`} />
 
         {/* Hreflang */}
         <meta httpEquiv="content-language" content="zh-HK" />
@@ -52,6 +50,10 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta property="og:site_name" content="足•包 marathons.hk" />
         <meta property="og:description" content={siteDescription} />
         <meta property="og:image" content={`${siteUrl}/hero-image.webp`} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="足•包 - 香港馬拉松活動平台主圖" />
+        <meta property="og:locale" content="zh_HK" />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -59,6 +61,11 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta property="twitter:title" content="足•包 - 香港馬拉松" />
         <meta property="twitter:description" content={siteDescription} />
         <meta property="twitter:image" content={`${siteUrl}/hero-image.webp`} />
+        <meta property="twitter:image:alt" content="足•包 - 香港馬拉松活動平台主圖" />
+        <meta property="twitter:domain" content="marathons.hk" />
+        {/* Add your Twitter handle here when available */}
+        {/* <meta property="twitter:site" content="@yourusername" /> */}
+        {/* <meta property="twitter:creator" content="@yourusername" /> */}
 
         {/* Favicon */}
         <link rel="icon" href="/favicon.ico" />

@@ -10,7 +10,6 @@ export const mockRootProps = {
     location: "尖沙咀文化中心",
     category: "馬拉松" as const,
     distance: "42.195公里",
-    price: 680,
     registration_url: "https://example.com/register",
     organizer: "香港業餘田徑總會",
     description: "香港最具規模的馬拉松賽事，吸引來自世界各地的跑者參與。路線經過香港多個著名地標，是體驗香港城市風光的最佳方式。",

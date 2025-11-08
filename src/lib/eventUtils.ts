@@ -52,10 +52,6 @@ export const formatEventTime = (time: string): string => {
   }
 };
 
-export const formatPrice = (price: number | null): string => {
-  if (price === null || price === 0) return '免費';
-  return `HK$${price.toLocaleString()}`;
-};
 
 export const formatDistance = (distance: string | null): string => {
   if (!distance) return '待定';

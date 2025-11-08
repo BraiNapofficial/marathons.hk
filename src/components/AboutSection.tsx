@@ -1,4 +1,4 @@
-import { Users, Target, Heart, Award, Zap } from 'lucide-react';
+import { Users, Target, Heart, Zap } from 'lucide-react';
 
 const AboutSection = () => {
   const features = [
@@ -16,11 +16,6 @@ const AboutSection = () => {
       icon: Heart,
       title: '社群連結',
       description: '連接香港跑步愛好者，建立活躍的跑步社群網絡'
-    },
-    {
-      icon: Award,
-      title: '專業服務',
-      description: '專業的活動策劃和組織經驗，確保每場活動的品質'
     },
     {
       icon: Zap,
@@ -52,7 +47,7 @@ const AboutSection = () => {
               
               <div className="space-y-4 text-muted-foreground">
                 <p>
-                  香港馬拉松活動平台成立於2024年，我們深知香港跑步愛好者在尋找合適活動時面臨的挑戰。
+                  香港馬拉松活動平台成立於2025年，我們深知香港跑步愛好者在尋找合適活動時面臨的挑戰。
                   分散的資訊、語言障礙、過時的網站設計，這些都阻礙了跑者們參與更多精彩活動。
                 </p>
                 

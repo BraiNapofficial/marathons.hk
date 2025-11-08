@@ -1,15 +1,19 @@
 import Image from 'next/image';
-import { Calendar, MapPin, Clock, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Calendar, MapPin, Clock, Tag, Route } from 'lucide-react';
 import { EventDetail } from '@/types/event';
 import { formatEventDate, formatEventTime } from '@/lib/eventUtils';
-import Link from 'next/link';
 
 interface EventHeroProps {
   event: EventDetail;
 }
 
 const EventHero: React.FC<EventHeroProps> = ({ event }) => {
+  // Function to handle Google Maps opening
+  const handleLocationClick = () => {
+    const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(event.location)}`;
+    window.open(mapsUrl, '_blank');
+  };
+
   return (
     <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -27,26 +31,14 @@ const EventHero: React.FC<EventHeroProps> = ({ event }) => {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Back Button */}
-          <div className="mb-6">
-            <Link href="/events">
-              <Button
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                返回活動列表
-              </Button>
-            </Link>
-          </div>
 
           {/* Event Title */}
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-display text-white mb-6 text-shadow animate-fade-in-up">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-display text-white mb-6 text-shadow">
             {event.title_zh}
           </h1>
           
           {/* Event Meta Info */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8 text-white/90 animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8 text-white/90">
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-accent" />
               <span className="text-lg">{formatEventDate(event.date)}</span>
@@ -59,20 +51,36 @@ const EventHero: React.FC<EventHeroProps> = ({ event }) => {
               </div>
             )}
             
-            <div className="flex items-center gap-2">
+            <div
+              className="flex items-center gap-2 cursor-pointer hover:text-accent transition-colors"
+              onClick={handleLocationClick}
+              title={`在 Google Maps 中查看 ${event.location}`}
+            >
               <MapPin className="w-5 h-5 text-accent" />
-              <span className="text-lg">{event.location}</span>
+              <span className="text-lg underline decoration-dotted underline-offset-4">{event.location}</span>
             </div>
           </div>
 
           {/* Event Category & Distance */}
-          <div className="flex flex-wrap gap-4 justify-center mb-8 animate-fade-in-up" style={{animationDelay: '0.4s'}}>
-            <span className="px-4 py-2 bg-accent/20 text-accent rounded-full text-sm font-medium backdrop-blur-sm">
-              {event.category}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+            {/* Category Badge */}
+            <span
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 bg-white/10 border border-accent/40 text-white text-sm font-medium backdrop-blur-sm shadow-sm"
+              aria-label={`Category: ${event.category}`}
+            >
+              <Tag className="w-4 h-4 opacity-80" />
+              <span>{event.category}</span>
             </span>
+            
+            {/* Distance Badge */}
             {event.distance && (
-              <span className="px-4 py-2 bg-white/10 text-white rounded-full text-sm font-medium backdrop-blur-sm">
-                {event.distance}
+              <span
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 bg-white/10 border border-accent/40 text-white text-sm font-medium backdrop-blur-sm shadow-sm"
+                aria-label={`Distance: ${event.distance}`}
+                title={event.distance}
+              >
+                <Route className="w-4 h-4 opacity-80" />
+                <span>{event.distance}</span>
               </span>
             )}
           </div>

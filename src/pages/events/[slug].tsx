@@ -1,86 +1,78 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { EventDetail, RelatedEvent, EventPageProps } from '@/types/event';
 import { supabase } from '@/lib/supabase';
+import { Button } from '@/components/ui/button';
 import EventPageHero from '@/components/ui/eventpage-hero';
 import EventPageDetailsCard from '@/components/ui/eventpage-details-card';
 import EventPageRelatedEventsCard from '@/components/ui/eventpage-related-events-card';
 import EventPageRegistrationButton from '@/components/ui/eventpage-registration-button';
 import EventPageShareButtons from '@/components/ui/eventpage-share-buttons';
 import Footer from '@/components/Footer';
+import { createSportsEventJsonLd, createEventMeta } from '@/lib/seoUtils';
 
 export default function EventPage({ event, relatedEvents }: EventPageProps) {
-  const siteUrl = 'https://marathons.hk';
-  const eventUrl = `${siteUrl}/events/${event.slug}`;
 
-  // Enhanced structured data for SEO with SportsEvent schema
-  // Validate with Google Rich Results Test: https://search.google.com/test/rich-results
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "SportsEvent",
-    "name": event.title_zh,
-    "description": event.description || `${event.title_zh} - ${event.location}`,
-    "startDate": event.date + (event.time ? `T${event.time}:00+08:00` : 'T06:00:00+08:00'),
-    "endDate": event.date + (event.time ? `T${event.time}:00+08:00` : 'T18:00:00+08:00'),
-    "location": {
-      "@type": "Place",
-      "name": event.location,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": event.location,
-        "addressCountry": "HK"
-      }
-    },
-    "organizer": {
-      "@type": "Organization",
-      "name": event.organizer || "足•包 marathons.hk",
-      "url": siteUrl
-    },
-    "offers": {
-      "@type": "Offer",
-      "price": event.price || 0,
-      "priceCurrency": "HKD",
-      "url": event.registration_url || `${siteUrl}/events`,
-      "availability": event.status === 'registration_open' ?
-        "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      "validFrom": new Date().toISOString().split('T')[0]
-    },
-    "performer": {
-      "@type": "SportsTeam",
-      "name": "跑步參與者"
-    },
-    "sport": "Running",
-    "eventStatus":
-      event.status === 'completed' ? "https://schema.org/EventCompleted" :
-      event.status === 'cancelled' ? "https://schema.org/EventCancelled" :
-      "https://schema.org/EventScheduled",
-    "url": eventUrl,
-    "image": event.image_url ? `${siteUrl}${event.image_url}` : `${siteUrl}/hero-image.webp`
-  };
+  // Create structured data and meta using utilities
+  const structuredData = createSportsEventJsonLd({
+    id: event.id,
+    event_name: event.title_zh,
+    event_date: event.date,
+    event_category: event.category,
+    distance: event.distance || '',
+    location: event.location,
+    link: event.registration_url,
+    event_description: event.description,
+    organizer_name: event.organizer,
+    image_url: event.image_url,
+    slug: event.slug
+  });
+
+  const meta = createEventMeta({
+    event_name: event.title_zh,
+    event_category: event.category,
+    distance: event.distance || '',
+    event_description: event.description,
+    location: event.location,
+    event_date: event.date,
+    image_url: event.image_url,
+    slug: event.slug
+  });
 
   return (
     <>
       <Head>
-        <title>{event.title_zh} - 足•包 | marathons.hk</title>
-        <meta name="description" content={event.description || `${event.title_zh} - ${event.location}，${event.date}`} />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <meta name="keywords" content={`${event.title_zh}, ${event.category}, ${event.location}, 香港馬拉松, 跑步活動`} />
         
         {/* Canonical URL */}
-        <link rel="canonical" href={eventUrl} />
+        <link rel="canonical" href={meta.url} />
         
         {/* Open Graph */}
         <meta property="og:type" content="event" />
-        <meta property="og:url" content={eventUrl} />
-        <meta property="og:title" content={event.title_zh} />
-        <meta property="og:description" content={event.description || `${event.title_zh} - ${event.location}`} />
-        <meta property="og:image" content={event.image_url ? `${siteUrl}${event.image_url}` : `${siteUrl}/hero-image.webp`} />
-        <meta property="og:site_name" content="足•包 marathons.hk" />
+        <meta property="og:url" content={meta.url} />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
+        <meta property="og:image" content={meta.image} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={meta.imageAlt} />
+        <meta property="og:site_name" content={meta.siteName} />
+        <meta property="og:locale" content={meta.locale} />
         
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={event.title_zh} />
-        <meta name="twitter:description" content={event.description || `${event.title_zh} - ${event.location}`} />
-        <meta name="twitter:image" content={event.image_url ? `${siteUrl}${event.image_url}` : `${siteUrl}/hero-image.webp`} />
+        <meta name="twitter:title" content={meta.title} />
+        <meta name="twitter:description" content={meta.description} />
+        <meta name="twitter:image" content={meta.image} />
+        <meta name="twitter:image:alt" content={meta.imageAlt} />
+        <meta name="twitter:domain" content="marathons.hk" />
+        {/* Add your Twitter handle here when available */}
+        {/* <meta name="twitter:site" content="@yourusername" /> */}
+        {/* <meta name="twitter:creator" content="@yourusername" /> */}
         
         {/* Structured Data */}
         <script
@@ -107,6 +99,19 @@ export default function EventPage({ event, relatedEvents }: EventPageProps) {
                       <p className="text-muted-foreground">立即報名參加這個精彩的跑步活動</p>
                     </div>
                     <EventPageRegistrationButton event={event} />
+                  </div>
+                  
+                  {/* Back Button */}
+                  <div className="flex justify-center mt-4">
+                    <Link href="/events">
+                      <Button
+                        variant="outline"
+                        className="border-accent/30 text-accent hover:bg-accent/10"
+                      >
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        返回活動列表
+                      </Button>
+                    </Link>
                   </div>
 
                   {/* Event Details */}
@@ -185,7 +190,7 @@ export const getStaticProps: GetStaticProps<EventPageProps> = async ({ params })
     // Get all events to find the matching one
     const { data: events, error } = await supabase
       .from('marathons.hk')
-      .select('id, event_name, event_date, event_category, distance, location, link, event_time, price, organizer, description, image_url, registration_deadline, max_participants, current_participants, english_slug_base')
+      .select('id, event_name, event_date, event_category, distance, location, link, english_slug_base, event_description, organizer_name')
       .order('event_date', { ascending: true });
 
     if (error || !events) {
@@ -203,15 +208,9 @@ export const getStaticProps: GetStaticProps<EventPageProps> = async ({ params })
       distance?: string;
       location?: string;
       link?: string;
-      event_time?: string;
-      price?: number;
-      organizer?: string;
-      description?: string;
-      image_url?: string;
-      registration_deadline?: string;
-      max_participants?: number;
-      current_participants?: number;
       english_slug_base?: string;
+      event_description?: string | null;
+      organizer_name?: string | null;
     }) =>
       event.english_slug_base === slug
     );
@@ -222,24 +221,30 @@ export const getStaticProps: GetStaticProps<EventPageProps> = async ({ params })
       };
     }
 
+    // Log warnings for missing critical fields
+    if (!eventData.event_name) console.warn('[SEO] Missing event_name in Supabase for slug:', slug);
+    if (!eventData.event_date) console.warn('[SEO] Missing event_date in Supabase for slug:', slug);
+    if (!eventData.location) console.warn('[SEO] Missing location in Supabase for slug:', slug);
+    if (!eventData.event_description) console.warn('[SEO] Missing event_description in Supabase for slug:', slug);
+    if (!eventData.organizer_name) console.warn('[SEO] Missing organizer_name in Supabase for slug:', slug);
+
     // Transform to EventDetail
     const event: EventDetail = {
       id: String(eventData.id),
       title_zh: eventData.event_name || '未命名活動',
       date: eventData.event_date,
-      time: eventData.event_time || undefined,
+      time: null,
       location: eventData.location || '待定',
       category: eventData.event_category || '其他',
-      distance: eventData.distance || undefined,
-      price: eventData.price || undefined,
-      registration_url: eventData.link || undefined,
-      organizer: eventData.organizer || undefined,
-      description: eventData.description || undefined,
-      image_url: eventData.image_url || '/hero-image.webp',
+      distance: eventData.distance || null,
+      registration_url: eventData.link || null,
+      organizer: eventData.organizer_name,
+      description: eventData.event_description,
+      image_url: '/hero-image.webp',
       status: 'registration_open',
-      registration_deadline: eventData.registration_deadline || undefined,
-      max_participants: eventData.max_participants || undefined,
-      current_participants: eventData.current_participants || undefined,
+      registration_deadline: null,
+      max_participants: null,
+      current_participants: null,
       slug: slug
     };
 
@@ -274,8 +279,8 @@ export const getStaticProps: GetStaticProps<EventPageProps> = async ({ params })
         date: e.event_date,
         location: e.location || '待定',
         category: e.event_category || '其他',
-        distance: e.distance || undefined,
-        registration_url: e.link || undefined,
+        distance: e.distance || null,
+        registration_url: e.link || null,
         slug: e.english_slug_base || 'event'
       }));
 

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EventDetail } from '@/types/event';
-import { Share2, Copy, Facebook, Twitter, MessageCircle, Check } from 'lucide-react';
+import { Share2, Copy, Facebook, X, Instagram, MessageCircle, Check } from 'lucide-react';
 
 interface ShareButtonsProps {
   event: EventDetail;
@@ -16,7 +16,8 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({ event }) => {
 
   const shareUrls = {
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}`,
-    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(eventUrl)}&text=${encodeURIComponent(eventTitle)}`,
+    instagram: `https://www.instagram.com/`, // Instagram doesn't support direct URL sharing, opens Instagram app
+    x: `https://twitter.com/intent/tweet?url=${encodeURIComponent(eventUrl)}&text=${encodeURIComponent(eventTitle)}`,
     whatsapp: `https://wa.me/?text=${encodeURIComponent(`${eventTitle} ${eventUrl}`)}`
   };
 
@@ -45,7 +46,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({ event }) => {
       <CardContent>
         <div className="space-y-4">
           {/* Social Media Buttons */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-4 gap-2">
             <Button
               variant="outline"
               size="sm"
@@ -59,11 +60,21 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({ event }) => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleShare('twitter')}
-              className="flex flex-col items-center gap-1 h-auto py-3 hover:bg-blue-400/10 hover:border-blue-400/30"
+              onClick={() => handleShare('instagram')}
+              className="flex flex-col items-center gap-1 h-auto py-3 hover:bg-pink-500/10 hover:border-pink-500/30"
             >
-              <Twitter className="w-4 h-4 text-blue-400" />
-              <span className="text-xs">Twitter</span>
+              <Instagram className="w-4 h-4 text-pink-500" />
+              <span className="text-xs">Instagram</span>
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleShare('x')}
+              className="flex flex-col items-center gap-1 h-auto py-3 hover:bg-gray-800/10 hover:border-gray-800/30"
+            >
+              <X className="w-4 h-4 text-gray-800 dark:text-gray-200" />
+              <span className="text-xs">X</span>
             </Button>
 
             <Button

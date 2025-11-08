@@ -11,10 +11,10 @@ type EventItem = {
   location?: string;
   category?: string;
   distance?: string;
-  price_range?: string;
   organizer?: string;
   is_featured?: boolean;
   registration_url?: string;
+  slug?: string | null;
 };
 
 const EventsSection = () => {
@@ -61,6 +61,7 @@ const EventsSection = () => {
         event_category?: string;
         distance?: string;
         link?: string;
+        english_slug_base?: string;
       }) => ({
         id: String(row.id),
         title_zh: row.event_name ?? '未命名活動',
@@ -68,10 +69,10 @@ const EventsSection = () => {
         location: row.location ?? undefined,
         category: row.event_category ?? undefined,
         distance: row.distance ?? undefined,
-        price_range: undefined,
         organizer: undefined,
         is_featured: false,
         registration_url: row.link ?? undefined,
+        slug: row.english_slug_base ?? null,
       })) || [];
 
       // Fallback: if no upcoming events, show last 90 days to avoid an empty homepage
@@ -96,6 +97,7 @@ const EventsSection = () => {
           event_category?: string;
           distance?: string;
           link?: string;
+          english_slug_base?: string;
         }) => ({
           id: String(row.id),
           title_zh: row.event_name ?? '未命名活動',
@@ -103,10 +105,10 @@ const EventsSection = () => {
           location: row.location ?? undefined,
           category: row.event_category ?? undefined,
           distance: row.distance ?? undefined,
-          price_range: undefined,
           organizer: undefined,
           is_featured: false,
           registration_url: row.link ?? undefined,
+          slug: row.english_slug_base ?? null,
         })) || [];
       }
 
@@ -197,9 +199,8 @@ const EventsSection = () => {
     location: event.location || null,
     category: event.category || null,
     distance: event.distance || null,
-    price_range: event.price_range || null,
     registration_url: event.registration_url || null,
-    slug: null
+    slug: event.slug || null
   });
 
   return (

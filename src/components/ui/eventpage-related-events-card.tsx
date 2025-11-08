@@ -40,9 +40,17 @@ const RelatedEventsCard: React.FC<RelatedEventsCardProps> = ({ events }) => {
           {events.map((event) => (
             <div key={event.id} className="border border-border/30 rounded-lg p-4 hover:bg-muted/20 transition-colors">
               <div className="flex flex-col gap-2">
-                <h4 className="font-semibold text-foreground text-sm leading-tight">
-                  {event.title_zh}
-                </h4>
+                {event.slug ? (
+                  <Link href={`/events/${event.slug}/`} aria-label={`查看 ${event.title_zh} 詳情`}>
+                    <h4 className="font-semibold text-foreground text-sm leading-tight hover:text-accent transition-colors">
+                      {event.title_zh}
+                    </h4>
+                  </Link>
+                ) : (
+                  <h4 className="font-semibold text-foreground text-sm leading-tight" title="詳情即將推出">
+                    {event.title_zh}
+                  </h4>
+                )}
                 
                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1">
@@ -55,8 +63,8 @@ const RelatedEventsCard: React.FC<RelatedEventsCardProps> = ({ events }) => {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-2">
-                  <span className="text-xs px-2 py-1 bg-accent/10 text-accent rounded">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs py-1 bg-accent/10 text-accent rounded">
                     {event.category}
                   </span>
                   

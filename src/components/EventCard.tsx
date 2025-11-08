@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Calendar, MapPin, Users, ExternalLink, Clock } from 'lucide-react';
@@ -9,11 +10,10 @@ interface EventCardProps {
   location: string;
   category: string;
   distance: string;
-  // Align with DB shape: use price_range (optional)
-  price_range?: string;
   organizer: string;
   is_featured?: boolean;
   registration_url?: string;
+  slug?: string | null;
 }
 
 const EventCard = ({
@@ -22,10 +22,10 @@ const EventCard = ({
   location,
   category,
   distance,
-  price_range,
   organizer,
   is_featured = false,
-  registration_url
+  registration_url,
+  slug
 }: EventCardProps) => {
   const categoryColors = {
     '馬拉松': 'bg-red-500',
@@ -52,9 +52,17 @@ const EventCard = ({
               {category}
             </span>
           </div>
-          <h3 className="text-xl font-semibold text-foreground group-hover:text-accent transition-colors">
-            {title_zh}
-          </h3>
+          {slug ? (
+            <Link href={`/events/${slug}/`} aria-label={`查看 ${title_zh} 詳情`}>
+              <h3 className="text-xl font-semibold text-foreground group-hover:text-accent transition-colors">
+                {title_zh}
+              </h3>
+            </Link>
+          ) : (
+            <h3 className="text-xl font-semibold text-foreground group-hover:text-accent transition-colors" title="詳情即將推出">
+              {title_zh}
+            </h3>
+          )}
         </div>
       </CardHeader>
 
@@ -79,19 +87,29 @@ const EventCard = ({
           <span className="text-sm">主辦方：{organizer}</span>
         </div>
         
-        <div className="pt-2">
-          <span className="text-lg font-semibold text-accent">{price_range ?? ''}</span>
-        </div>
       </CardContent>
 
       <CardFooter className="flex gap-2 pt-4">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="flex-1 border-border hover:border-accent hover:bg-accent hover:text-accent-foreground"
-        >
-          查看詳情
-        </Button>
+        {slug ? (
+          <Link href={`/events/${slug}/`} className="flex-1">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full border-border hover:border-accent hover:bg-accent hover:text-accent-foreground"
+            >
+              查看詳情
+            </Button>
+          </Link>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-1 border-border hover:border-accent hover:bg-accent hover:text-accent-foreground"
+            disabled
+          >
+            查看詳情
+          </Button>
+        )}
         {registration_url && (
           <Button 
             size="sm" 

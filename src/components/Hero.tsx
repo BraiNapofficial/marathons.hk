@@ -74,23 +74,23 @@ const Hero = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 flex flex-col justify-center items-center h-full pt-8 md:pt-0 pb-16 md:pb-0">
         <div className="max-w-4xl mx-auto w-full">
           {/* Main Heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-white mb-2 md:mb-6 text-shadow-md animate-fade-in-up">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-white mb-2 md:mb-6 text-shadow-md">
             香港馬拉松活動
           </h1>
           
           {/* Subtitle */}
-          <p className="text-lg md:text-xl text-white/90 mb-4 md:mb-8 font-body leading-relaxed text-shadow-md animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+          <p className="text-lg md:text-xl text-white/90 mb-4 md:mb-8 font-body leading-relaxed text-shadow-md">
             探索香港最完整的跑步活動資訊平台
           </p>
           
           {/* Description */}
-          <p className="text-sm md:text-lg text-white/80 mb-6 md:mb-12 max-w-2xl mx-auto font-body leading-normal text-shadow-md animate-fade-in-up" style={{animationDelay: '0.4s'}}>
+          <p className="text-sm md:text-lg text-white/80 mb-6 md:mb-12 max-w-2xl mx-auto font-body leading-normal text-shadow-md">
             從馬拉松到越野跑，從初學者到專業選手，找到最適合你的跑步活動。
             立即加入香港跑步社群，開始你的跑步旅程。
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6 md:mb-12 animate-fade-in-up" style={{animationDelay: '0.6s'}}>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6 md:mb-12">
             <Button
               variant="outline"
               size="lg"
@@ -110,7 +110,7 @@ const Hero = () => {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 max-w-3xl mx-auto animate-fade-in-up" style={{animationDelay: '0.8s'}}>
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 max-w-3xl mx-auto">
             <div className="glass-effect rounded-lg p-2 sm:p-4 text-center card-hover">
               <Calendar className="w-5 h-5 sm:w-8 sm:h-8 text-accent mx-auto mb-1 sm:mb-3" />
               <div className="text-lg sm:text-2xl font-bold text-white mb-1">
